@@ -15,6 +15,7 @@
       bookTemplate: '#template-book',
     },
   };
+  const filters = [];
 
   const templates = {
     bookCard: Handlebars.compile(document.querySelector(select.templateOf.bookTemplate).innerHTML),
@@ -24,11 +25,11 @@
     constructor(){
       const thisBook = this;
 
-      thisBook.renderBooks();
+      thisBook.getElements();
       thisBook.initActions();
     }
 
-    renderBooks(){
+    getElements(){
       const thisBook = this;
       thisBook.data = dataSource.books;
 
@@ -43,8 +44,8 @@
       }
     }
     initActions(){
-      const favoriteBooks = [],
-        filters = [];
+      const thisBooksList = this;
+      const favoriteBooks = [];
 
       const bookList = document.querySelectorAll(select.books.bookImage);
       for (let book of bookList){
@@ -71,28 +72,29 @@
             filters.splice(filters.indexOf(value), 1);
           }
         }
-        filterBooks();
+        thisBooksList.filterBooks();
       });
-      function filterBooks(){
-        for(let book of dataSource.books){
-          let shouldBeHidden = false;
-          for(const filter of filters){
-            if(!book.details[filter]){
-              shouldBeHidden = true;
-              break;
-            }
-          }
-          const bookImage = document.querySelector('.book__image[data-id="' + book.id + '"]');
+    }
     
-          if(shouldBeHidden == true){
-            bookImage.classList.add('hidden');
-          } else {
-            bookImage.classList.remove('hidden');
+    filterBooks(){
+      for(let book of dataSource.books){
+        let shouldBeHidden = false;
+        for(const filter of filters){
+          if(!book.details[filter]){
+            shouldBeHidden = true;
+            break;
           }
         }
+        const bookImage = document.querySelector('.book__image[data-id="' + book.id + '"]');
+  
+        if(shouldBeHidden == true){
+          bookImage.classList.add('hidden');
+        } else {
+          bookImage.classList.remove('hidden');
+        }
       }
-      
     }
+
     determineRatingBgc(rating) {
       const thisBooksList = this;
 
